@@ -1,0 +1,25 @@
+{
+    "name": "forgeonline/fg-customers",
+    "description": "Forgeonline customers",
+    "license": "BSD-3-Clause",
+    "type": "forgeonline-forgezf",
+    "version": "1.0.0",
+    "homepage": "http://forge.co.nz",
+    "prefer-stable": true,
+    "require": {
+        "php": "^5.6 || ^7.0",
+        "zendframework/skeleton-application": "*",
+        "forgeonline/fg-installer":"*"
+		"forgeonline/fg-home":"*",
+    },
+    "autoload": {
+        "psr-4": {
+            "FgCustomers\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "FgCustomersTest\\": "test/"
+        }
+    }
+}
