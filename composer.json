@@ -9,8 +9,8 @@
     "require": {
         "php": "^5.6 || ^7.0",
         "zendframework/skeleton-application": "*",
-        "forgeonline/fg-installer":"*"
-		"forgeonline/fg-home":"*",
+        "forgeonline/fg-installer":"*",
+		"forgeonline/fg-home":"*"
     },
     "autoload": {
         "psr-4": {
