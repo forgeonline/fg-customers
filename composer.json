@@ -10,7 +10,7 @@
         "php": "^5.6 || ^7.0",
         "zendframework/skeleton-application": "*",
         "forgeonline/fg-installer":"*",
-		"forgeonline/fg-home":"1.0.*"
+		"forgeonline/fg-home":"*"
     },
     "autoload": {
         "psr-4": {
