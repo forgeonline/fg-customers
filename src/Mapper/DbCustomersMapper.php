@@ -21,6 +21,11 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Hydrator\HydratorInterface;
+use Zend\Db\Adapter\Driver\ResultInterface;
+use Zend\Hydrator\Reflection as ReflectionHydrator;
+use FgCustomers\Model\Customers;
+
+
 /**
  * ZendDbSqlMapper Mapper
  *
@@ -30,7 +35,8 @@ use Zend\Hydrator\HydratorInterface;
  * @license  GPL http://forge.co.nz
  * @link     http://forge.co.nz
  */
-class DbCustomersMapper implements CustomersMapperInterface
+class DbCustomersMapper
+implements CustomersMapperInterface
 {
 	/**
 	* @var \Zend\Db\Adapter\AdapterInterface
@@ -46,7 +52,6 @@ class DbCustomersMapper implements CustomersMapperInterface
 	* @var \FgCustomers\Model\CustomersInterface
 	*/
 	protected $customersPrototype;
-	
 	
 	/**
 	* @param AdapterInterface  $dbAdapter
@@ -73,7 +78,7 @@ class DbCustomersMapper implements CustomersMapperInterface
 	{
 		$sql    = new Sql($this->dbAdapter);
 		$select = $sql->select();
-		$select->from('customers');
+		$select->from('customer');
 		$select->where(['id = ?' => $id]);
 		$select->limit(1);
 
@@ -84,30 +89,73 @@ class DbCustomersMapper implements CustomersMapperInterface
 		)->toArray();
 		
 		if ($result) {
-			return $this->hydrator->hydrate($result[0], $this->customerstPrototype);
+			//\Zend\Debug\Debug::dump($this->customerstPrototype);die();
+			return $this->hydrator->hydrate($result[0], $this->customersPrototype);
 		}
 		return false;
 	}
+	
+	/**
+	* {@inheritDoc}
+	*/
+	public function save(\FgCustomers\Interfaces\CustomersInterface $customer)
+	{
+		if($customer) {
+			$sql    = new Sql($this->dbAdapter);
+			if(!empty($customer->getId())){
+				$query = $sql->update('customer');
+				$query->set(
+					[
+						'name' => $customer->getName(),
+						'customerid' => $customer->getCustomerId(),
+						'phone' => $customer->getPhone(),
+						'company' => $customer->getCompany(),
+					]
+				);
+				$query->where(['id = ?' => $customer->getId()]);
+			} else {
+				$query = $sql->insert('customer');
+				$query->columns(
+					[
+						$customer->getName() => 'name',
+						$customer->getCustomerId() => 'customerid',
+						$customer->getPhone() => 'phone',
+						$customer->getCompany() => 'company',
+					]
+				);
+			}
+			$buildsql = $sql->buildSqlString($query);
+			$result = $this->dbAdapter->query(
+				$buildsql,
+				$this->dbAdapter::QUERY_MODE_EXECUTE
+			);
+			if($result) {
+				return true;
+			}
+			return false;
+		}
+	}
 
-	/*
-	* @return array|customersInterface[]
+	/**
+	* {@inheritDoc}
 	*/
 	public function listCustomers($offset, $limit)
 	{
 		$sql    = new Sql($this->dbAdapter);
-		$select = $sql->select('customers');
+		$select = $sql->select('customer');
 		$select->limit($limit);
-		$select->limit($offset);
-		
-		$buildsql = $sql->buildSqlString($select);
-		$result = $this->dbAdapter->query(
-			$buildsql,
-			$this->dbAdapter::QUERY_MODE_EXECUTE
-		)->toArray();
-		
-		if ($result) {
-			return $result;
+		if($offset) {
+			$select->offset($offset);
 		}
+        
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet = new HydratingResultSet(new ReflectionHydrator, new Customers());
+            $resultSet->initialize($result);
+            return $resultSet;
+        }
 		return false;
 	}
 

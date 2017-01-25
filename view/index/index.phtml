@@ -1,0 +1,56 @@
+    <section class="content-header">
+      <h1>Customers</h1>
+    </section>
+    
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+          	<?php if(!$this->customers) {?>
+            	<div class="col-xs-12">
+            	    No results for customers
+                </div>
+            <?php } else { ?>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="example2" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Name</th>
+                  <th>Company</th>
+                  <th>Customer Id</th>
+                  <th>Phone</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($this->customers as $customer) {?>
+                <tr>
+                  <td><?php echo $customer->getId();?></td>
+                  <td><?php echo $customer->getName()?></td>
+                  <td><?php echo $customer->getCompany()?></td>
+                  <td><?php echo $customer->getCustomerId()?></td>
+                  <td><?php echo $customer->getPhone()?></td>
+                  <td><a href="<?= $this->url('customers/edit', ['action' => 'edit', 'id' => $customer->getId()]);?>">Edit</a></td>
+                </tr>
+                <?php } ?>
+                </tbody>
+                <tfoot>
+                <tr>
+                  <th>Id</th>
+                  <th>Name</th>
+                  <th>Company</th>
+                  <th>Customer Id</th>
+                  <th>Phone</th>
+                  <th>Action</th>
+                </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.box-body -->
+            <?php } ?>
+          </div>
+          </div>
+      </div>
+    </section>

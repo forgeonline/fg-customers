@@ -18,7 +18,8 @@ use Interop\Container\ContainerInterface;
 use FgCustomers\Controller\CustomersController;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-
+use Zend\Hydrator\ClassMethods;
+use FgCustomers\Model\Customers;
 
 /**
  * CustomersControllerFactory Class
@@ -36,7 +37,11 @@ class CustomersControllerFactory implements FactoryInterface
         $requestedName,
         array $options = null)
     {
-        return new CustomersController($container);
+        return new CustomersController(
+			$container,
+			new ClassMethods(false),
+			new Customers()
+		);
     }
 	
 	/**

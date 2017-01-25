@@ -17,12 +17,10 @@ namespace FgCustomers\Service;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Hydrator\ClassMethods;
-use FgCustomers\Mapper\DbCustomersMapper;
-use FgCustomers\Model\Customers;
+use FgCustomers\Manager\CustomerSessionManager;
 
 /**
- * DbCustomersMapperFactory Class
+ * CustomerSessionsFactory Class
  *
  * @category Service
  * @package  FgCustomers
@@ -30,7 +28,7 @@ use FgCustomers\Model\Customers;
  * @license  GPL http://forge.co.nz
  * @link     http://forge.co.nz
  */
-class DbCustomersMapperFactory implements FactoryInterface
+class CustomerSessionsFactory implements FactoryInterface
 {
     /**
      * Factory for zend-servicemanager v3.
@@ -38,32 +36,26 @@ class DbCustomersMapperFactory implements FactoryInterface
      * @param ContainerInterface $container
      * @param string $name
      * @param null|array $options
+     * @return Logger
      */
     public function __invoke(
         ContainerInterface $container,
         $requestedName,
-        array $options = null
-	) {
-		return new DbCustomersMapper(
-			$container->get('Zend\Db\Adapter\Adapter'),
-			new ClassMethods(false),
-			new Customers()
-		);
-	}
-	
+        array $options = null)
+    {
+        return new CustomerSessionManager($container);
+    }
+    
     /**
      * Factory for zend-servicemanager v2.
      *
      * Proxies to `__invoke()`.
      *
      * @param ServiceLocatorInterface $serviceLocator
+     * @return Logger
      */
-    public function createService(
-		ServiceLocatorInterface $serviceLocator
-	) {
-        return $this(
-			$serviceLocator,
-			FgCustomers\Service\DbCustomersMapperFactory
-		);
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        return $this($serviceLocator, Service\CustomerSessionsFactory::class);
     }
 }

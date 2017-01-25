@@ -22,18 +22,39 @@ use Zend\ServiceManager\Factory\InvokableFactory;
 return [
     'router' => [
         'routes' => [
-            'customer' => [
-                'type' => Literal::class,
+            'customers' => [
+                'type' => Segment::class,
                 'options' => [
                     'route'    => '/customers',
-                    'defaults' => [
-                        'controller'    => Controller\CustomersController::class,
-                        'action'        => 'index',
-                    ],
+					'defaults' => [
+						'controller' => Controller\CustomersController::class,
+						'action'     => 'index',
+					],
                 ],
 				'may_terminate' => true,
 				'child_routes' => [
-					'logout' => [
+					'new' => [
+						'type' => Literal::class,
+						'options' => [
+							'route' => '/new',
+							'defaults' => [
+								'action' => 'new',
+							]
+						],
+					],
+					'edit' => [
+						'type' => Segment::class,
+						'options' => [
+							'route' => '/edit[/:action][/:id]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                'action'     => 'edit',
+                            ],
+						],
+					],
+					'save' => [
 						'type' => Literal::class,
 						'options' => [
 							'route' => '/save',
@@ -46,22 +67,26 @@ return [
             ],
         ],
     ],
+    'service_manager' => [
+        'factories' => [
+			'customerSessions' => Service\CustomerSessionsFactory::class,
+            'FgCustomers\Service\CustomersFactory' => Service\CustomersFactory::class,
+			'FgCustomers\Mapper\DbCustomersMapper' => 'FgCustomers\Service\DbCustomersMapperFactory',
+          ],
+    ],
     'controllers' => [
         'factories' => [
 			Controller\CustomersController::class => 'FgCustomers\Factory\CustomersControllerFactory',
-			'FgCustomers\Service\CustomersFactory' => Service\CustomersFactory::class,
-			'FgCustomers\Mapper\DbCustomersMapper' => 'FgCustomers\Service\DbCustomersMapperFactory',
         ],
     ],
     'view_manager' => [
-        'display_not_found_reason' => true,
-        'display_exceptions'       => true,
-        'doctype'                  => 'HTML5',
-        'not_found_template'       => 'error/404',
-        'exception_template'       => 'error/index',
         'template_map' => [
-            'fg-customers/index/index'     => 
+            'fg-customers/customers/index'     => 
             __DIR__ . '/../view/index/index.phtml',
+			'fg-customers/customers/new' 		=>
+			__DIR__ . '/../view/index/new.phtml',
+			'fg-customers/customers/edit' 		=>
+			__DIR__ . '/../view/index/new.phtml',
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',

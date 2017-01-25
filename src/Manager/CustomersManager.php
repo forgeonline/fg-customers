@@ -52,4 +52,12 @@ class CustomersManager implements CustomersServiceInterface
 	{
 		return $this->configMapper->findById($id);	
 	}
+	
+	/**
+	* {@inheritDoc}
+	*/
+	public function save(\FgCustomers\Interfaces\CustomersInterface $customer)
+	{
+		return $this->configMapper->save($customer);	
+	}
 }

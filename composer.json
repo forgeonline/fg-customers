@@ -3,7 +3,6 @@
     "description": "Forgeonline customers",
     "license": "BSD-3-Clause",
     "type": "forgeonline-forgezf",
-    "version": "1.0.1",
     "homepage": "http://forge.co.nz",
     "prefer-stable": true,
     "require": {

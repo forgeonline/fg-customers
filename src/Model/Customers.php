@@ -102,6 +102,14 @@ class Customers implements CustomersInterface
 	/**
 	* {@inheritDoc}
 	*/
+	public function setName($value)
+	{
+		$this->name = $value;
+	}
+	
+	/**
+	* {@inheritDoc}
+	*/
 	public function setCustomerId($value)
 	{
 		$this->customerid = $value;

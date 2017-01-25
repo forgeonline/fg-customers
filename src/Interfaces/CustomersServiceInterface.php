@@ -39,4 +39,14 @@ interface CustomersServiceInterface
       * @return array|ConfigurationInterface[]
       */
      public function listCustomers($offset, $limit);
+	 
+     /**
+      * Save customer
+      *
+	  * @param customerInterface $customer Customer
+	  *
+	  * @return CustomersInterface
+      * @throws \InvalidArgumentException
+      */
+     public function save(\FgCustomers\Interfaces\CustomersInterface $customer);
 }
